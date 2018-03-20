@@ -611,7 +611,12 @@ my $directory=getcwd();
 my $terminal=-t STDOUT && eval{require IO::Pty::Easy;IO::Pty::Easy->import();1;};
 my $erase_line=$terminal && eval{require Term::Cap;my $t=Term::Cap->Tgetent();$t->Tputs('ce');};
 
-my $HOME_MR_CONFIG = "$ENV{HOME}/.mrconfig";
+my $HOME_MR_CONFIG;
+if (defined($ENV{XDG_CONFIG_HOME})) {
+	$HOME_MR_CONFIG = "$ENV{XDG_CONFIG_HOME}/mr/config";
+} else {
+	$HOME_MR_CONFIG = "$ENV{HOME}/.config/mr/config";
+}
 $ENV{MR_CONFIG}=find_mrconfig();
 
 # globals :-(
@@ -1216,8 +1221,12 @@ sub is_trusted_config {
 
 	return 1 if $trust_all;
 
-	my $trustfile=$ENV{HOME}."/.mrtrust";
-
+	my $trustfile;
+	if (defined($ENV{XDG_CONFIG_HOME})) {
+		$trustfile = "$ENV{XDG_CONFIG_HOME}/mr/trust";
+	} else {
+		$trustfile = "$ENV{HOME}/.config/mr/trust";
+	}
 	if (! %trusted) {
 		$trusted{$HOME_MR_CONFIG}=1;
 		if (open (TRUST, "<", $trustfile)) {
