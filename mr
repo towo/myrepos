@@ -1756,7 +1756,11 @@ sub register {
 			}
 		}
 		if (! $foundconfig) {
-			$directory=""; # no config file, use builtin
+			if (-e "${HOME_MR_CONFIG}") {
+				($directory) = safe_abs_path($HOME_MR_CONFIG)=~/^(.*\/)[^\/]+$/;
+			} else {
+				$directory=""; # no config file, use builtin
+			}
 		}
 	}
 	if (@ARGV) {
