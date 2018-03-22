@@ -1,4 +1,23 @@
-myrepos, a tool to manage all your version control repos
+# myrepos, a tool to manage all your version control repos
+
+This is a fork that tries to adhere to the XDG base dir specification for a
+better home™.
+
+I'm maintaining this as a method for having a dotfiles repo that has a neat and
+low impact on your $HOME without using silly things like symlinking.
+
+In the same vein, as the general usage is done in tandem with RichiH/vcsh, I've
+decided to implement @RichiH's available.d/config.d scheme.
+
+That means that:
+
+* `mr register` will add the configuration to
+  `$XDG_CONFIG_HOME/mr/available.d/${REPO_NAME}.${REPO_TYPE}`
+
+* `mr enable` and `mr disable` can be used to enable/disable repos from
+  `available.d`.
+
+## Original description
 
 You have a lot of version control repositories. Sometimes you want to
 update them all at once. Or push out all your local changes. You use
