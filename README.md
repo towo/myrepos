@@ -1,7 +1,8 @@
 # myrepos, a tool to manage all your version control repos
 
-This is a fork that tries to adhere to the XDG base dir specification for a
-better home™.
+This is a fork that tries to adhere to the [XDG base dir
+specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
+for a better home™.
 
 I'm maintaining this as a method for having a dotfiles repo that has a neat and
 low impact on your $HOME without using silly things like symlinking.
