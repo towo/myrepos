@@ -6,8 +6,9 @@ better home™.
 I'm maintaining this as a method for having a dotfiles repo that has a neat and
 low impact on your $HOME without using silly things like symlinking.
 
-In the same vein, as the general usage is done in tandem with RichiH/vcsh, I've
-decided to implement @RichiH's available.d/config.d scheme.
+In the same vein, as the general usage is done in tandem with
+[RichiH/vcsh](https://github.com/RichiH/vcsh), I've decided to implement
+[@RichiH](https://github.com/RichiH)'s `available.d/config.d` scheme.
 
 That means that:
 
