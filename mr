@@ -55,11 +55,11 @@ working directory. Or, if you are in a subdirectory of a repository that
 contains no other registered repositories, it will stay in that directory,
 and work on only that repository,
 
-B<mr> is configured by .mrconfig files, which list the repositories. It
-starts by reading the .mrconfig file in your home directory, and this can
-in turn chain load .mrconfig files from repositories. It also automatically
-looks for a .mrconfig file in the current directory, or in one of its
-parent directories.
+B<mr> is configured by .mrconfig files, which list the repositories. It starts
+by reading the config file in your configuration directory
+(C<$XDG_CONFIG_HOME/mr/>, or C<$HOME/.config/mr/>), and this can in turn chain
+load .mrconfig files from repositories. It also automatically looks for a
+.mrconfig file in the current directory, or in one of its parent directories.
 
 These predefined commands should be fairly familiar to users of any version
 control system:
@@ -185,6 +185,8 @@ directory to register.
 
 The mrconfig file that is modified is chosen by either the -c option, or by
 looking for the closest known one at or in a parent of the current directory.
+
+If no mrconfig is found that way, the user's configuration file will be used.
 
 =item config
 
@@ -341,7 +343,7 @@ a good speedup in updates without loading the machine too much.
 
 =item --trust-all
 
-Trust all mrconfig files even if they are not listed in F<~/.mrtrust>.
+Trust all mrconfig files even if they are not listed in F<~/.config/mr/trust>.
 Use with caution.
 
 =item -p
@@ -548,7 +550,7 @@ reading all mrconfig files other than the main F<~/.mrconfig> in untrusted
 mode. In untrusted mode, mrconfig files are limited to running only known
 safe commands (like "git clone") in a carefully checked manner.
 
-To configure mr to trust other mrconfig files, list them in F<~/.mrtrust>.
+To configure mr to trust other mrconfig files, list them in F<~/.config/mr/trust>.
 One mrconfig file should be listed per line. Either the full pathname
 should be listed, or the pathname can start with F<~/> to specify a file
 relative to your home directory.
@@ -1420,7 +1422,7 @@ sub loadconfig {
 		}
 		else {
 			die "mr: $msg in untrusted $f line $lineno\n".
-				"(To trust this file, list it in ~/.mrtrust.)\n";
+				"(To trust this file, list it in ~/.config/mr/trust.)\n";
 		}
 	};
 
