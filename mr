@@ -1897,7 +1897,6 @@ sub find_candidate {
 		}
 	# If no matches are found
 	} else {
-		# TODO: "no results found for …"
 		print STDERR "mr: no results found for $glob\n";
 		return "";
 	}
@@ -1927,7 +1926,7 @@ sub dotd_available {
 sub dotd_enable {
 	my $filename = basename shift;
 	if (symlink("${path_dotd_available}/${filename}", "${path_dotd_enabled}/${filename}")) {
-		print "mr: enabled configuration ${filename}\n";
+		print "mr: enabled configuration ${filename}\n" if $verbose;
 	} else {
 		print STDERR "mr: symlink failed for ${filename}: $!\n";
 	}
