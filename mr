@@ -1881,7 +1881,7 @@ sub bootstrap {
 # returns empty string if no/multiple matches found
 sub find_candidate {
 	my $glob = shift;
-	my @file_candidates = glob($glob);
+	my @file_candidates = glob($glob . "*");
 	# We have matches
 	if (scalar @file_candidates) {
 		# More than one result
