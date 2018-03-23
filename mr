@@ -586,6 +586,7 @@ use warnings;
 use strict;
 use Getopt::Long;
 use Cwd qw(getcwd abs_path);
+use File::Basename;
 
 # things that can happen when mr runs a command
 use constant {
@@ -613,11 +614,19 @@ my $directory=getcwd();
 my $terminal=-t STDOUT && eval{require IO::Pty::Easy;IO::Pty::Easy->import();1;};
 my $erase_line=$terminal && eval{require Term::Cap;my $t=Term::Cap->Tgetent();$t->Tputs('ce');};
 
+# Configuration file shortcuts
+# We could always specify/generate these, but this is more readable.
 my $HOME_MR_CONFIG;
+my $path_dotd_available;
+my $path_dotd_enabled;
 if (defined($ENV{XDG_CONFIG_HOME})) {
 	$HOME_MR_CONFIG = "$ENV{XDG_CONFIG_HOME}/mr/config";
+	$path_dotd_available = "$ENV{XDG_CONFIG_HOME}/mr/available.d";
+	$path_dotd_enabled = "$ENV{XDG_CONFIG_HOME}/mr/config.d";
 } else {
 	$HOME_MR_CONFIG = "$ENV{HOME}/.config/mr/config";
+	$path_dotd_available = "$ENV{HOME}/.config/mr/available.d";
+	$path_dotd_enabled = "$ENV{HOME}/.config/mr/config.d";
 }
 $ENV{MR_CONFIG}=find_mrconfig();
 
@@ -1681,7 +1690,12 @@ sub dispatch {
 		action($action, @{$repos[0]}) if @repos;
 		exit 0;
 	}
-
+	elsif ($action eq 'enable') {
+		enable(@ARGV);
+	}
+	elsif ($action eq 'disable') {
+		disable(@ARGV);
+	}
 	if (!$jobs || $jobs > 1) {
 		mrs($action, selectrepos());
 	}
@@ -1858,6 +1872,101 @@ sub bootstrap {
 	@skipped=grep { safe_abs_path($_) ne safe_abs_path($topdir) } @skipped;
 	showstats("bootstrap");
 	exitstats();
+}
+
+# Searches for a unique file matching a base glob
+# returns filename if unique found
+# returns empty string if no/multiple matches found
+sub find_candidate {
+	my $glob = shift;
+	my @file_candidates = glob($glob);
+	# We have matches
+	if (scalar @file_candidates) {
+		# More than one result
+		if (scalar @file_candidates > 1) {
+			print STDERR "mr: found multiple options for $glob:\n  ";
+			print STDERR join("\n  ", @file_candidates);
+			print STDERR "none selected, please specify\n";
+			return "";
+		} else {
+			my $filename = basename shift @file_candidates;
+			print "mr: Expanding $glob to $filename\n" if $verbose;
+			return $filename;
+		}
+	# If no matches are found
+	} else {
+		# TODO: "no results found for …"
+		print STDERR "mr: no results found for $glob\n";
+		return "";
+	}
+}
+
+# Check if dotd config is enabled
+sub dotd_enabled {
+	my $filename = basename shift;
+	if (-e "${path_dotd_enabled}/${filename}") {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+# Check if dotd config exists
+sub dotd_available {
+	my $filename = basename shift;
+	if ( -e "${path_dotd_available}/${filename}") {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+# Symlink dotd configuration to enabled directory
+sub dotd_enable {
+	my $filename = basename shift;
+	if (symlink("${path_dotd_available}/${filename}", "${path_dotd_enabled}/${filename}")) {
+		print "mr: enabled configuration ${filename}\n";
+	} else {
+		print STDERR "mr: symlink failed for ${filename}: $!\n";
+	}
+}
+
+sub dotd_disable {
+	my $filename = basename shift;
+	if (unlink("${path_dotd_enabled}/${filename}")) {
+		print "mr: disabled configuration ${filename}\n" if $verbose;
+	} else {
+		print STDERR "mr: failed to disable ${filename}: $1";
+	}
+}
+
+# Enable a dotd configuration
+sub enable {
+	foreach my $configuration (@ARGV) {
+		# If the specified configuration exists (i.e. "dotfiles.vcsh")
+		next if dotd_enabled($configuration);
+		if (dotd_available($configuration)) {
+			dotd_enable($configuration);
+		} else {
+			my $target = file_candidate("${path_dotd_available}/${configuration}");
+			next unless $target;
+			next if dotd_enabled($target);
+			dotd_enable($target);
+		}
+	}
+}
+
+# Disable a dotd configuration
+sub disable {
+	foreach my $configuration (@ARGV) {
+		if (dotd_enabled($configuration)) {
+			dotd_disable($configuration);
+		} else {
+			my $target = file_candidate("${path_dotd_available}/${configuration}");
+			next unless $target;
+			dotd_disable($target);
+		}
+	}
 }
 
 # alias expansion and command stemming
