@@ -2421,6 +2421,8 @@ veracity_trusted_checkout = vv clone $url $repo
 list = true
 config =
 bootstrap =
+enable =
+disable =
 
 online =
 	if [ -s ~/.mrlog ]; then
