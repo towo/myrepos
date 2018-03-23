@@ -1,3 +1,9 @@
+myrepos (1.20180323) unstable; urgency=low
+
+  * Implement enable/disable feature for dotd configurations.
+
+ -- Tobias Wolter <towo@towo.eu>  Fri, 23 Mar 2017 15:30:00 +0100
+
 myrepos (1.20160123) UNRELEASED; urgency=medium
 
   * Strip .git extension when registering vsch repositories.
