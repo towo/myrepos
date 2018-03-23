@@ -1948,7 +1948,7 @@ sub enable {
 		if (dotd_available($configuration)) {
 			dotd_enable($configuration);
 		} else {
-			my $target = file_candidate("${path_dotd_available}/${configuration}");
+			my $target = find_candidate("${path_dotd_available}/${configuration}");
 			next unless $target;
 			next if dotd_enabled($target);
 			dotd_enable($target);
@@ -1962,7 +1962,7 @@ sub disable {
 		if (dotd_enabled($configuration)) {
 			dotd_disable($configuration);
 		} else {
-			my $target = file_candidate("${path_dotd_available}/${configuration}");
+			my $target = find_candidate("${path_dotd_available}/${configuration}");
 			next unless $target;
 			dotd_disable($target);
 		}
