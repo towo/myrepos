@@ -1692,9 +1692,11 @@ sub dispatch {
 	}
 	elsif ($action eq 'enable') {
 		enable(@ARGV);
+		exit 0;
 	}
 	elsif ($action eq 'disable') {
 		disable(@ARGV);
+		exit 0;
 	}
 	if (!$jobs || $jobs > 1) {
 		mrs($action, selectrepos());
