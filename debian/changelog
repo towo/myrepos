@@ -1,8 +1,14 @@
+myrepos (1.2018032701) unstable; urgency=low
+
+  * Fix incorrect handling of dotd disabling.
+
+ -- Tobias Wolter <towo@towo.eu>  Tue, 27 Mar 2018 23:09:00 +0100
+
 myrepos (1.20180323) unstable; urgency=low
 
   * Implement enable/disable feature for dotd configurations.
 
- -- Tobias Wolter <towo@towo.eu>  Fri, 23 Mar 2017 15:30:00 +0100
+ -- Tobias Wolter <towo@towo.eu>  Fri, 23 Mar 2018 15:30:00 +0100
 
 myrepos (1.20160123) UNRELEASED; urgency=medium
 
